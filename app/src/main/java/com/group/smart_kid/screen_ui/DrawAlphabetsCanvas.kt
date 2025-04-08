@@ -1,4 +1,4 @@
-package com.group.mlkitdemo.screen_ui
+package com.group.smart_kid.screen_ui
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -125,7 +125,7 @@ fun DrawAlphabetsCanvas(
             originalCanvas.drawPath(path, paint)
 
             // Resize the bitmap to 28x28 for model input
-           // val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 28, 28, true)
+            // val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 28, 28, true)
 
 
             onBitmapReady(originalBitmap) // Send processed bitmap

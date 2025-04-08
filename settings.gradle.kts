@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ML kit Demo"
+rootProject.name = "Smart Kid"
 include(":app")
 include(":opencv")

@@ -1,4 +1,4 @@
-package com.group.mlkitdemo
+package com.group.smart_kid
 
 import org.junit.Test
 

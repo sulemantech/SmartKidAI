@@ -1,4 +1,4 @@
-package com.group.mlkitdemo.util
+package com.group.smart_kid.util
 
 import android.content.Context
 import android.graphics.Bitmap

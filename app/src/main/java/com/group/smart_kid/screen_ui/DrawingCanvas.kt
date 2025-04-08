@@ -1,4 +1,4 @@
-package com.group.mlkitdemo.screen_ui
+package com.group.smart_kid.screen_ui
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

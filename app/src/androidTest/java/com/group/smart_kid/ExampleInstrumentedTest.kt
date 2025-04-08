@@ -1,4 +1,4 @@
-package com.group.mlkitdemo
+package com.group.smart_kid
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

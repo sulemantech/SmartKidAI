@@ -1,4 +1,4 @@
-package com.group.mlkitdemo.ui.theme
+package com.group.smart_kid.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

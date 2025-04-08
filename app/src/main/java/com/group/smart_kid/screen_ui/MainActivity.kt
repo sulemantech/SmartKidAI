@@ -1,9 +1,10 @@
-package com.group.mlkitdemo.screen_ui
+package com.group.smart_kid.screen_ui
 
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,10 +20,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -39,23 +44,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group.mlkitdemo.ui.theme.MLKitDemoTheme
-import com.group.mlkitdemo.util.TFLiteCharacterHelper
-import com.group.mlkitdemo.util.TFLiteHelper
+import com.group.smart_kid.ui.theme.MLKitDemoTheme
+import com.group.smart_kid.util.TFLiteCharacterHelper
+import com.group.smart_kid.util.TFLiteHelper
 import org.opencv.android.OpenCVLoader
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Locale
 
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var model: TFLiteCharacterHelper
     private lateinit var model_digit: TFLiteHelper
+    private lateinit var textToSpeech: TextToSpeech
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         model = TFLiteCharacterHelper(this)
         model_digit = TFLiteHelper(this)
+        initTextToSpeech()
+
 
         setContent {
             MLKitDemoTheme {
@@ -65,9 +74,26 @@ class MainActivity : ComponentActivity() {
             }
         }
         if (!OpenCVLoader.initDebug()) {
-            Log.e("OpenCV ", "OpenCV initialization failed!")
+            Log.e("OpenCV", "OpenCV initialization failed!")
         } else {
-            Log.d("OpenCV ", "OpenCV initialized successfully!")
+            Log.d("OpenCV", "OpenCV initialized successfully!")
+        }
+
+    }
+
+    private fun initTextToSpeech() {
+        textToSpeech = TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val result = textToSpeech.setLanguage(Locale.US) // or Locale("en", "IN")
+
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Log.e("TTS", "Language not supported or missing data.")
+                } else {
+                    Log.d("TTS", "TTS is ready and offline")
+                }
+            } else {
+                Log.e("TTS", "Initialization failed.")
+            }
         }
 
     }
@@ -79,6 +105,7 @@ class MainActivity : ComponentActivity() {
         var prediction by remember { mutableStateOf("") }
         var recognizedBitmap by remember { mutableStateOf<Bitmap?>(null) }
         var showDialog by remember { mutableStateOf(false) }
+
 
 
         Column(
@@ -117,9 +144,8 @@ class MainActivity : ComponentActivity() {
             } else {
 
                 DrawAlphabetsCanvas(onBitmapReady = { bitmap ->
-
                     prediction = model.predict(bitmap)
-                    //saveBitmapToFile(bitmap, "canvas.png", this@MainActivity)
+                    //  saveBitmapToFile(bitmap, "canvas.png", this@MainActivity)
                     recognizedBitmap = bitmap
                     showDialog = true
 
@@ -148,12 +174,13 @@ class MainActivity : ComponentActivity() {
                 })
             }
 
-
-
-
-
-            Spacer(modifier = Modifier.height(20.dp))
-
+            Spacer(modifier = Modifier.height(10.dp))
+            VoiceButtonUI(
+                this@MainActivity,
+                predictionCallback = { result ->
+                    prediction = result
+                }
+            )
             // Prediction Box
             Card(
                 modifier = Modifier
@@ -163,15 +190,40 @@ class MainActivity : ComponentActivity() {
                 elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD)) // Light blue
             ) {
-                Text(
-                    text = "Prediction: $prediction",
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Prediction: $prediction",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Start
+                    )
+
+                    if (prediction.isNotEmpty()) {
+                        IconButton(onClick = {
+                        textToSpeech.speak(
+                            prediction,
+                            TextToSpeech.QUEUE_FLUSH,
+                            null,
+                            "ttsId"
+                        )
+                        },
+                            modifier = Modifier.size(24.dp) ){
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.VolumeUp,
+                                contentDescription = "Speak",
+                                tint = Color(0xFF1E88E5), // Blue shade
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
+                    }}
             }
+
+
         }
     }
 
@@ -198,6 +250,5 @@ class MainActivity : ComponentActivity() {
         outputStream.close()
         Log.d("BitmapDebug", "Saved at: ${file.absolutePath}")
     }
-
 
 }

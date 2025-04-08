@@ -71,6 +71,7 @@ dependencies {
   //  implementation(libs.digital.ink.recognition)
     implementation(libs.tensorflow.lite)
     implementation (project(":opencv"))
+    implementation (libs.androidx.material.icons.extended)
 
 
 }
