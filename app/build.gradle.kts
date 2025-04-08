@@ -73,5 +73,4 @@ dependencies {
     implementation (project(":opencv"))
 
 
-
 }
