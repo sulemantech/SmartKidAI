@@ -1,4 +1,4 @@
-package com.group.mlkitdemo
+package com.group.mlkitdemo.screen_ui
 
 
 import android.content.Context
@@ -45,7 +45,6 @@ import com.group.mlkitdemo.util.TFLiteHelper
 import org.opencv.android.OpenCVLoader
 import java.io.File
 import java.io.FileOutputStream
-import java.nio.ByteBuffer
 
 
 class MainActivity : ComponentActivity() {

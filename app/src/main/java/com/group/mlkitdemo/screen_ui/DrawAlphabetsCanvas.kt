@@ -1,4 +1,4 @@
-package com.group.mlkitdemo
+package com.group.mlkitdemo.screen_ui
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -30,7 +30,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun DrawingCanvas(
+fun DrawAlphabetsCanvas(
     onBitmapReady:  (Bitmap) -> Unit,
     onClear: (String) -> Unit
 ) {
@@ -125,10 +125,11 @@ fun DrawingCanvas(
             originalCanvas.drawPath(path, paint)
 
             // Resize the bitmap to 28x28 for model input
-            val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 28, 28, true)
+           // val resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 28, 28, true)
 
 
-            onBitmapReady(resizedBitmap) // Send processed bitmap
+            onBitmapReady(originalBitmap) // Send processed bitmap
+
         }) {
             Text("Recognize")
         }
