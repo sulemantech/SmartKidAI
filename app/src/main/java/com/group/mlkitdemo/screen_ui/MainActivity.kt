@@ -65,9 +65,9 @@ class MainActivity : ComponentActivity() {
             }
         }
         if (!OpenCVLoader.initDebug()) {
-            Log.e("OpenCV", "OpenCV initialization failed!")
+            Log.e("OpenCV ", "OpenCV initialization failed!")
         } else {
-            Log.d("OpenCV", "OpenCV initialized successfully!")
+            Log.d("OpenCV ", "OpenCV initialized successfully!")
         }
 
     }
